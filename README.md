@@ -15,10 +15,10 @@ keywords: Diffusion MRI, Tissue Segmentation, Multimodal, Registration
 
 ## Setup
 This implementation is based on several existing python packages:
-- ['DIPY'](https://dipy.org/)
-- ['NiBabel'](https://nipy.org/nibabel/)
-- ['NumPy'](https://numpy.org/)
-- ['XGBoost'](https://xgboost.readthedocs.io/)
+- [`DIPY`](https://dipy.org/)
+- [`NiBabel`](https://nipy.org/nibabel/)
+- [`NumPy`](https://numpy.org/)
+- [`XGBoost`](https://xgboost.readthedocs.io/)
 Installing these packages are a prerequisite for using this pipeline.
 
 ## TPM Prediction and Registration
