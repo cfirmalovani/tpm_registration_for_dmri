@@ -493,11 +493,6 @@ class DiffeomorphicMap(object):
         
         warped = warp_f(image, self.backward, affine_idx_in, affine_idx_out,
                         affine_disp, out_shape)
-        # Cfir
-#        warped = np.zeros(image.shape)
-#        for idx in range(image.shape[-1]):
-#            warped[:,:,:,idx] = warp_f(image[:,:,:,idx], self.backward, affine_idx_in, affine_idx_out,
-#                                       affine_disp, out_shape)
 
         return warped
 
@@ -539,7 +534,6 @@ class DiffeomorphicMap(object):
         if out_shape is not None:
             out_shape = np.asarray(out_shape, dtype=np.int32)
         if self.is_inverse:
-			## Cfir
             temp_warped = self._warp_backward(image[:,:,:,0], interpolation,
                                               image_world2grid, out_shape,
                                               out_grid2world)
@@ -601,7 +595,6 @@ class DiffeomorphicMap(object):
         information.
         """
         if self.is_inverse:
-			## Cfir
             temp_warped = self._warp_forward(image[:,:,:,0], interpolation, image_world2grid,
                                              out_shape, out_grid2world)
             warped = np.zeros(temp_warped.shape + (image.shape[-1],))

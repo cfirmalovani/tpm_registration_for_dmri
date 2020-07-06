@@ -190,7 +190,6 @@ class SimilarityMetric(object, metaclass=abc.ABCMeta):
         static and moving images
         """
 
-### Cfir
 class MCC_Metric(SimilarityMetric):
 
     def __init__(self, dim, sigma_diff=2.0, radius=4):
@@ -218,7 +217,7 @@ class MCC_Metric(SimilarityMetric):
         cross-correlation factors according to the dimension of the input
         images
         """
-        if self.dim == 3: #cfir
+        if self.dim == 3:
             self.precompute_factors = mcc.precompute_cc_factors_3d
             self.compute_forward_step = mcc.compute_cc_forward_step_3d
             self.compute_backward_step = mcc.compute_cc_backward_step_3d
@@ -226,7 +225,7 @@ class MCC_Metric(SimilarityMetric):
         else:
             raise ValueError('CCVI Metric not defined for dim. %d' % (self.dim))
 
-    ## Cfir
+    
     def probmap_gradient(self, image):
         r"""
         Calculate per modality gradient of multimodal image
@@ -264,22 +263,22 @@ class MCC_Metric(SimilarityMetric):
                                                self.radius)
         self.factors = np.array(self.factors)
         
-        self.gradient_moving = self.probmap_gradient(self.moving_image)  ##Cfir
+        self.gradient_moving = self.probmap_gradient(self.moving_image)
 
         # Convert moving image's gradient field from voxel to physical space
         if self.moving_spacing is not None:
-            for idx in range(self.gradient_moving.shape[-2]): ##Cfir
+            for idx in range(self.gradient_moving.shape[-2]):
                 self.gradient_moving[:,:,:,idx,:] /= self.moving_spacing
         if self.moving_direction is not None:
             for idx in range(self.gradient_moving.shape[-2]):   
                 self.reorient_vector_field(self.gradient_moving[:,:,:,idx,:],
                                            self.moving_direction)
 
-        self.gradient_static = self.probmap_gradient(self.static_image)  ##Cfir
+        self.gradient_static = self.probmap_gradient(self.static_image)
 
         # Convert moving image's gradient field from voxel to physical space
         if self.static_spacing is not None:
-            for idx in range(self.gradient_static.shape[-2]): ##Cfir
+            for idx in range(self.gradient_static.shape[-2]):
                 self.gradient_static[:,:,:,idx,:] /= self.static_spacing
         if self.static_direction is not None:
             for idx in range(self.gradient_static.shape[-2]):   
@@ -323,8 +322,7 @@ class MCC_Metric(SimilarityMetric):
         displacement = np.array(displacement)
         if np.sum(np.isnan(displacement)) > 0:
             print('NAN FOUND IN BACKWARD')
-        #displacement[np.isnan(displacement)] = 0
-        for i in range(self.dim - 1): #cfir
+        for i in range(self.dim - 1): 
             displacement[..., i] = ndimage.filters.gaussian_filter(
                 displacement[..., i], self.sigma_diff)
         return displacement

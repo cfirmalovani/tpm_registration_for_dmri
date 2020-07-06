@@ -42,14 +42,12 @@ class ScaleSpace(object):
             zero in the input image. The default is False.
 
         """
-        self.dim = len(image.shape) - 1 #cfir
+        self.dim = len(image.shape) - 1
         self.num_levels = num_levels
-        input_size = np.array(image.shape[:-1]) #cfir
+        input_size = np.array(image.shape[:-1])
         if mask0:
             mask = np.asarray(image > 0, dtype=np.int32)
 
-        # Normalize input image to [0,1]
-#        img = (image - image.min())/(image.max() - image.min()) #cfir - no need
         img = image
         if mask0:
             img *= mask
