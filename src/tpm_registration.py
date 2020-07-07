@@ -6,7 +6,7 @@ Created on Thu Jul  2 17:11:27 2020
 
 from mod_dipy.imwarp import SymmetricDiffeomorphicRegistration
 from mod_dipy.metrics import MCC_Metric
-from affine_reg import Affine_Registration
+from affine_wrapper import Affine_Registration
 import numpy as np
 
 
