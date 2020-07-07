@@ -1,15 +1,15 @@
 # Tissue Probability Based Registration for Diffusion Weighted MRI
 
 # Introduction
-Multimodal approach for MRI registration using calculated tissue probability maps (TPM) of the brain.
+Multivariate approach for MRI registration using calculated tissue probability maps (TPM) of the brain, based on the work done in [Ido Tavor's Lab](https://www.tau.ac.il/~idotavor/) and [The Lab for Advanced MRI](https://beneliezer-lab.com/).
+
 This repository incorporates the source code and (in the future) usable pipeline of this method.
 
 keywords: Diffusion MRI, Tissue Segmentation, Multimodal, Registration
 
 ## Recent Updates
 
- - Uploaded first version of source files of our pipeline. Will add the actual pipeline after coding a usable UI.
-
+ - Uploaded textual UI for the DTI registration pipeline.
 
 # Instructions
 
@@ -22,6 +22,10 @@ This implementation is based on several existing python packages:
 
 Installing these packages are a prerequisite for using this pipeline.
 
-## TPM Prediction and Registration
-Will be added soon!
+Otherwise, the current implementation supports Windows, MacOS and Linux. 
 
+## TPM Prediction and Registration
+Currently only textual UI is available for the DTI pipeline. 
+UI is implemented using the `argparse` module.
+
+Run `python tpm_reg_pipeline.py -h` for further details.

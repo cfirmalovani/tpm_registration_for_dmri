@@ -1,3 +1,8 @@
+""" 
+Original code of scale space representation from DIPY
+Includes variations for handling TPM based registration
+"""
+
 from dipy.align import floating
 import numpy as np
 import numpy.linalg as npl

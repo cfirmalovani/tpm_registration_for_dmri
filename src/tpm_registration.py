@@ -1,13 +1,14 @@
 """
-Created on Thu Jul  2 17:11:27 2020
+An implementation of the TPM based multimodal registration
 
 @author: Cfir Malovani
 """
 
 from mod_dipy.imwarp import SymmetricDiffeomorphicRegistration
 from mod_dipy.metrics import MCC_Metric
-from affine_reg import Affine_Registration
+from affine_wrapper import Affine_Registration
 import numpy as np
+import pickle
 
 
 class TPM_Registration:
@@ -19,7 +20,7 @@ class TPM_Registration:
                 affine_level_iters = [10000, 1000, 100],
                 affine_sigmas = [3.0, 1.0, 0.0],
                 affine_factors = [4, 2, 1],
-                deformable_level_iters = [20, 20, 20]):
+                deformable_level_iters = [20, 20, 20], verbose = False):
         """
         TPM based registration process initialization
         :param affine_nbins: Number of bins for the Mutual Information metric used by affine registraion
@@ -27,10 +28,12 @@ class TPM_Registration:
         :param affine_sigmas:  Smoothing parameters (per scale) for affine registraion
         :param affine_factors: Scale factors to build the scale space for affine registraion
         :param deformable_level_iters: Number of iterations (per scale) for deformable registraion
+        :param verbose: Verbosity flag
         """ 
         self.deformable_level_iters = deformable_level_iters
         self.affine_reg = Affine_Registration(affine_nbins, affine_sampling_prop,
                                               affine_sigmas, affine_factors)
+        self.verbose = verbose
         
         # Other members are initialized later during optimization process
         self.start_grid2world = None
@@ -69,9 +72,11 @@ class TPM_Registration:
         
         input_mask = 1 - input_image[..., -1]
         target_mask = 1 - target_image[..., -1]
+        self.print_status('Optimizing affine transformation')
         affine = self.affine_reg.optimize_affine_registration(input_mask, input_grid2world, 
                                                               target_mask, target_grid2world)
         warped_input_image = self.affine_reg.apply_affine_to_multimodal_image(input_image, affine, is_tpm = True)
+        self.print_status('Optimizing multimodal deformable transformation')
         deform_mapping = self.optimize_deformable_registration(warped_input_image, target_image)
         self.registration_methods = (affine, deform_mapping)
                
@@ -184,6 +189,30 @@ class TPM_Registration:
         return tpm
     
     
+    def save_warp_fields(self, filepath):
+        """
+        Save optimized warp fields and affine matrices to file.
+        :param filepath: File to save parameters
+        """
+        f = open(filepath, 'wb')
+        pickle.dump(self.start_grid2world, f)
+        pickle.dump(self.target_grid2world, f)
+        pickle.dump(self.registration_methods, f)
+        f.close()
+        
+        
+    def load_warp_fields(self, filepath):
+        """
+        Load optimized warp fields and affine matrices from file.
+        :param filepath: File of saved parameters
+        """
+        f = open(filepath, 'rb')
+        self.start_grid2world = pickle.load(f)
+        self.target_grid2world = pickle.load(f)
+        self.registration_methods = pickle.load(f)
+        f.close()
+    
+    
     def validate_registration_conditions(self, input_grid2world, is_inverse = False):
         """
         Making sure the input image for the transformaion fits the optimized voxel-to-space transformation
@@ -196,4 +225,14 @@ class TPM_Registration:
             required_grid2world = self.target_grid2world
         else:
             required_grid2world = self.start_grid2world
-        assert (input_grid2world == required_grid2world).all(), 'Input image grid {}; needs to be {}'.format(input_grid2world, required_grid2world)
+        assert (input_grid2world == required_grid2world).all(), 'Input image grid is\n{}\nneeds to be\n{}'.format(input_grid2world, required_grid2world)
+        
+        
+    def print_status(self, message):
+        """
+        Printing status reports according to verbosity
+        :param message: Message to be printed in case verbosity is enabled
+        """
+        if self.verbose:
+            print(message)
+            

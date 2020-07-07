@@ -1,4 +1,7 @@
-"""  Classes and functions for Symmetric Diffeomorphic Registration """
+"""  
+Original code of classes and functions for Symmetric Diffeomorphic Registration from DIPY
+Includes variations for handling TPM based registration
+"""
 
 from __future__ import print_function
 import abc
