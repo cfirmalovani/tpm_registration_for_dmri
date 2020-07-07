@@ -1,5 +1,5 @@
 """
-Created on Thu Jul  2 17:11:27 2020
+An implementation of the TPM based multimodal registration
 
 @author: Cfir Malovani
 """
