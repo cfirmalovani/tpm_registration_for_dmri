@@ -9,8 +9,8 @@ keywords: Diffusion MRI, Tissue Segmentation, Multimodal, Registration
 
 ## Recent Updates
 
- - Uploaded first version of source files of our pipeline. Will add the actual pipeline after coding a usable UI.
-
+ - Uploaded first version of source files of our pipeline.
+ - Uploaded textual UI for the DTI registration pipeline - just run the python `tpm_reg_pipeline.py` file.
 
 # Instructions
 
@@ -23,6 +23,34 @@ This implementation is based on several existing python packages:
 
 Installing these packages are a prerequisite for using this pipeline.
 
+Otherwise, the current implementation supports Windows and MacOS, with Linux coming up. 
+
 ## TPM Prediction and Registration
-Will be added soon!
+Currently only textual UI is available for the DTI pipeline. 
+UI is implemented using the `argparse` module.
+
+Available arguments:
+-i FA_filename, --input FA_filename
+					filename of input FA map - must be in the same
+					directory with Lambda maps
+-r ref_TPM_filename, --ref ref_TPM_filename, --tpm ref_TPM_filename
+					reference for TPMs of the target space (default is
+					MNI)
+-o warped_filename, --out warped_filename
+					destination folder for output (warped) DTI maps
+					(default is source directory)
+-ot [TPM_savedir], --out_tpm [TPM_savedir]
+					if activated, saving calculated TPM in destination
+					folder (default is source directory)
+-m mask_filename, --mask mask_filename
+					binary mask file (default will assume the DTI maps are
+					already masked)
+-sw [warp_savedir], --save_wrap [warp_savedir]
+					if activated, saving warp fields in destination folder
+					(default is source directory)
+--smoothing [parameter [parameter ...]]
+					if activated, gaussian smoothing parameters for TPM -
+					may insert values for window size and sigma (default
+					are 5, 1)
+-v, --verbose         if activated, provide status reports of the pipeline
 

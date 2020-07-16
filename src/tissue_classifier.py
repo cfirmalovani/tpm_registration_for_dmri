@@ -5,6 +5,7 @@ XGBoost based DTI tissue classifier
 """
 
 import pickle
+from xgboost import XGBClassifier
 import numpy as np
 from scipy.ndimage.filters import convolve
 
@@ -15,13 +16,15 @@ class Tissue_Classifier:
     Prediction output is a 4D array, with the last dimension contains
     the different TPMs: GM, WM, CSF, Background
     """
-    def __init__(self, model_file, stats_file):
+    def __init__(self, model_file, stats_file, verbose = False):
         """
         Tissue classifier initializtion
         :param model_file: Pre-trained version of the classifier. Saved using the pickle module
         :param stat_file: Normalization paramaters for the different DTI images. Saved using the pickle module
+        :param verbose: Verbosity flag
         """
         # Load classifier files
+        self.model = XGBClassifier(n_jobs = -1, class_weight = 'balanced')   
         f = open(model_file, 'rb')
         self.model = pickle.load(f)
         f.close()
@@ -29,6 +32,8 @@ class Tissue_Classifier:
         f = open(stats_file, 'rb')
         self.dti_statistics = pickle.load(f)
         f.close()
+        
+        self.verbose = verbose
         
         # Classifier is dedicated for DTI parameters
         self.parameters_list = ['FA', 'L1', 'L2', 'L3']
@@ -84,7 +89,8 @@ class Tissue_Classifier:
         for idx in range(input_dti.shape[-1]):
             single_parameter = input_dti[..., idx]
             dti_features[:,idx] = single_parameter[label_indices]
-            
+        
+        self.print_status('Running TPM prediction')
         outputs_predictions = self.model.predict_proba(dti_features)
         for idx in range(3):
             single_tpm = np.zeros(input_shape)
@@ -96,6 +102,7 @@ class Tissue_Classifier:
         
         ## Apply smoothing (if chosen to)
         if smooth_tpm:
+            self.print_status('Smoothing TPM')
             output_tpm = self.smooth_tpm(output_tpm, window_size, sigma)
         
         return output_tpm
@@ -139,3 +146,13 @@ class Tissue_Classifier:
         smoothed_tpm /= normal_factor
     
         return smoothed_tpm
+    
+    
+    def print_status(self, message):
+        """
+        Printing status reports according to verbosity
+        :param message: Message to be printed in case verbosity is enabled
+        """
+        if self.verbose:
+            print(message)
+            
