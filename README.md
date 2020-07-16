@@ -9,8 +9,7 @@ keywords: Diffusion MRI, Tissue Segmentation, Multimodal, Registration
 
 ## Recent Updates
 
- - Uploaded first version of source files of our pipeline.
- - Uploaded textual UI for the DTI registration pipeline - just run the python `tpm_reg_pipeline.py` file.
+ - Uploaded textual UI for the DTI registration pipeline.
 
 # Instructions
 
