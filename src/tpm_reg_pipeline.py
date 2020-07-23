@@ -162,7 +162,7 @@ class TPM_Registration_Pipeline:
         self.print_status('Saving warped DTI images')
         warped_dti_image = tpm_registration.register_scan(dti_image, dti_affine)
         for idx, dti_type in enumerate(self.dti_parameters):
-            nib_scan = nib.Nifti1Image(warped_dti_image[..., idx], dti_affine)
+            nib_scan = nib.Nifti1Image(warped_dti_image[..., idx], target_affine)
             output_file = os.path.join(self.out_warped_dir, 'warped_{}{}{}.nii.gz'.format(self.basename[0], dti_type, self.basename[1]))
             nib.save(nib_scan, output_file)
         
@@ -181,5 +181,5 @@ class TPM_Registration_Pipeline:
             
             
 if __name__ == '__main__':
-    tpm_pipeline = TPM_Registration_Pipeline()           
+    tpm_pipeline = TPM_Registration_Pipeline()          
     tpm_pipeline.run_pipeline()

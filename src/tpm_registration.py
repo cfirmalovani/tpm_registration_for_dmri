@@ -225,7 +225,7 @@ class TPM_Registration:
             required_grid2world = self.target_grid2world
         else:
             required_grid2world = self.start_grid2world
-        assert (input_grid2world == required_grid2world).all(), 'Input image grid {}; needs to be {}'.format(input_grid2world, required_grid2world)
+        assert (input_grid2world == required_grid2world).all(), 'Input image grid is\n{}\nneeds to be\n{}'.format(input_grid2world, required_grid2world)
         
         
     def print_status(self, message):
