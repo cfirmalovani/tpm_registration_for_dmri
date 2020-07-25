@@ -98,7 +98,8 @@ class TPM_Registration_Pipeline:
         
         if args.mask is not None:
             mask_image = nib.load(args.mask)
-            assert mask_image.affine == dti_affine, 'Mask scan does not match input scan!'
+            assert (mask_image.affine == dti_affine).all(), 'Mask scan does not match input scan!'
+            mask_image = mask_image.get_fdata()
         else: # Assume DTI image is already masked, calculate from non-zero elements in matrix
             mask_image = 1. * (np.sum(dti_image != 0, axis = -1) > 0)
                 
