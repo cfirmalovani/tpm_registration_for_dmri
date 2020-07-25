@@ -22,7 +22,7 @@ This implementation is based on several existing python packages:
 
 Installing these packages are a prerequisite for using this pipeline.
 
-Otherwise, the current implementation supports Windows and MacOS, with Linux coming up. 
+Otherwise, the current implementation supports Windows, MacOS and Linux. 
 
 ## TPM Prediction and Registration
 Currently only textual UI is available for the DTI pipeline. 

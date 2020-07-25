@@ -12,11 +12,11 @@ from dipy.align import vector_fields as vfu
 
 from sys import platform
 
-if platform == 'win32':
+if platform == 'win32': 
     from mod_dipy import multimodal_crosscorr_win as mcc
 elif platform == 'darwin':
     from mod_dipy import multimodal_crosscorr_mac as mcc
-elif platform == 'linux':
+elif platform.startswith('linux'): # Using startswith in case of older python versions 
     from mod_dipy import multimodal_crosscorr_linux as mcc
 
 
