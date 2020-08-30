@@ -172,7 +172,7 @@ class TPM_Registration_Pipeline:
             self.print_status('Saving warped TPMs to file {}'.format(warped_tpm_file))
             warped_tpm = tpm_registration.register_scan(tpm, dti_affine, is_tpm = True)
             nib_scan = nib.Nifti1Image(warped_tpm, target_affine)
-            nib.save(nib.scan, os.path.join(os.path.dirname(self.tpm_output), warped_tpm_file))
+            nib.save(nib_scan, os.path.join(os.path.dirname(self.tpm_output), warped_tpm_file))
         
         if self.save_warpfields is not None:
             self.print_status('Saving warp fields to file {}'.format(os.path.basename(self.save_warpfields)))
