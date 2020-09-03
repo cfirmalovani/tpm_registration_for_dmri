@@ -98,7 +98,8 @@ class TPM_Registration_Pipeline:
         
         if args.mask is not None:
             mask_image = nib.load(args.mask)
-            assert mask_image.affine == dti_affine, 'Mask scan does not match input scan!'
+            assert (mask_image.affine == dti_affine).all(), 'Mask scan does not match input scan!'
+            mask_image = mask_image.get_fdata()
         else: # Assume DTI image is already masked, calculate from non-zero elements in matrix
             mask_image = 1. * (np.sum(dti_image != 0, axis = -1) > 0)
                 
@@ -165,6 +166,13 @@ class TPM_Registration_Pipeline:
             nib_scan = nib.Nifti1Image(warped_dti_image[..., idx], target_affine)
             output_file = os.path.join(self.out_warped_dir, 'warped_{}{}{}.nii.gz'.format(self.basename[0], dti_type, self.basename[1]))
             nib.save(nib_scan, output_file)
+        
+        if self.tpm_output is not None:
+            warped_tpm_file = 'warped_' + os.path.basename(self.tpm_output)
+            self.print_status('Saving warped TPMs to file {}'.format(warped_tpm_file))
+            warped_tpm = tpm_registration.register_scan(tpm, dti_affine, is_tpm = True)
+            nib_scan = nib.Nifti1Image(warped_tpm, target_affine)
+            nib.save(nib_scan, os.path.join(os.path.dirname(self.tpm_output), warped_tpm_file))
         
         if self.save_warpfields is not None:
             self.print_status('Saving warp fields to file {}'.format(os.path.basename(self.save_warpfields)))
