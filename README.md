@@ -1,7 +1,7 @@
 # Tissue Probability Based Registration for Diffusion Weighted MRI
 
 # Introduction
-Multimodal approach for MRI registration using calculated tissue probability maps (TPM) of the brain, based on the work done in [Ido Tavor's Lab](https://www.tau.ac.il/~idotavor/) and [The Lab for Advanced MRI](https://beneliezer-lab.com/).
+Multivariate approach for MRI registration using calculated tissue probability maps (TPM) of the brain, based on the work done in [Ido Tavor's Lab](https://www.tau.ac.il/~idotavor/) and [The Lab for Advanced MRI](https://beneliezer-lab.com/).
 
 This repository incorporates the source code and (in the future) usable pipeline of this method.
 
