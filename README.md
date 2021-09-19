@@ -29,3 +29,6 @@ Currently only textual UI is available for the DTI pipeline.
 UI is implemented using the `argparse` module.
 
 Run `python tpm_reg_pipeline.py -h` for further details.
+
+## Reference
+Malovani, C., Friedman, N., Ben-Eliezer, N. and Tavor, I. (2021), Tissue Probability Based Registration of Diffusion-Weighted Magnetic Resonance Imaging. J Magn Reson Imaging, 54: 1066-1076. https://doi.org/10.1002/jmri.27654
