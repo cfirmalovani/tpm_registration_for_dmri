@@ -12,12 +12,12 @@ if __name__ == '__main__':
     parser.add_argument("-i", "--input", type=str, metavar='MRI scan to register',
                         help="A scan file to be registered",
                         required=True)
-    parser.add_argument("-w", "--saved_warps", type=str, metavar='ref_TPM_filename',
+    parser.add_argument("-w", "--saved_warps", type=str, metavar='Saved warp fields',
                         help="Saved warped fields to be apllied",
                         required=True)
-    parser.add_argument("-o", "--out", type=str, metavar='warped_filename',
+    parser.add_argument("-o", "--out", type=str, metavar='Output path for warped scan',
                         help="destination folder for output (warped) DTI maps (default is source directory)")
-    parser.add_argument("--inverse", type=str, metavar='warped_filename',
+    parser.add_argument("--inverse", action='store_true', metavar='Apply inverse transformation',
                         help="destination folder for output (warped) DTI maps (default is source directory)")
     args = parser.parse_args()
 
