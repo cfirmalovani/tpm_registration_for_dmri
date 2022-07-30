@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+REG_ARGS="$@"
+BASEDIR=$(dirname "$0")
+conda activate tpm_reg
+echo $@
+python $BASEDIR/tpm_registration_for_dmri/src/tpm_reg_applywarp.py $@
