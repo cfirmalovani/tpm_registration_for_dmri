@@ -1,6 +1,6 @@
 dipy==1.1.1
 nibabel==3.1.0
-numpy
+numpy==1.20.0
 scipy==1.4.1
 xgboost==0.90
 scikit-learn==0.21.2

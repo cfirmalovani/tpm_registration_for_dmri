@@ -7,7 +7,7 @@ conda activate tpm_reg
 echo "Installing PIP libraries"
 pip install dipy==1.1.1
 pip install nibabel==3.1.0
-pip install numpy
+pip install numpy==1.20.0
 pip install scipy==1.4.1
 pip install xgboost==0.90
 pip install Cython==0.29.17

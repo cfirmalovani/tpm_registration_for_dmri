@@ -9,6 +9,7 @@ from mod_dipy.metrics import MCC_Metric
 from affine_wrapper import Affine_Registration
 import numpy as np
 import pickle
+import scipy
 
 
 class TPM_Registration:
@@ -21,7 +22,9 @@ class TPM_Registration:
                  affine_level_iters=[10000, 1000, 100],
                  affine_sigmas=[3.0, 1.0, 0.0],
                  affine_factors=[4, 2, 1],
-                 deformable_level_iters=[20, 20, 20], verbose=False):
+                 deformable_level_iters=[20, 20, 20],
+                 interpolation='linear',
+                 verbose=False):
         """
         TPM based registration process initialization
         :param affine_nbins: Number of bins for the Mutual Information metric used by affine registraion
@@ -29,11 +32,17 @@ class TPM_Registration:
         :param affine_sigmas:  Smoothing parameters (per scale) for affine registraion
         :param affine_factors: Scale factors to build the scale space for affine registraion
         :param deformable_level_iters: Number of iterations (per scale) for deformable registraion
+        :param interpolation: string, either 'linear' or 'nearest'
         :param verbose: Verbosity flag
         """
+        assert interpolation.lower() in ['linear', 'nearest'], (
+            print(f'interpolation should be linear or nearest, got {interpolation}'))
+        self.interpolation = interpolation.lower()
+
         self.deformable_level_iters = deformable_level_iters
         self.affine_reg = Affine_Registration(affine_nbins, affine_sampling_prop,
-                                              affine_sigmas, affine_factors)
+                                              affine_sigmas, affine_factors, self.interpolation)
+
         self.verbose = verbose
 
         # Other members are initialized later during optimization process
@@ -122,7 +131,9 @@ class TPM_Registration:
         transformed_scan = self.affine_reg.apply_affine_to_multimodal_image(input_scan, affine, is_tpm)
         warped_scan = np.zeros(transformed_scan.shape)
         for idx in range(input_scan.shape[-1]):
-            warped_scan[..., idx] = np.squeeze(mapping.transform(np.expand_dims(transformed_scan[..., idx], axis=-1)))
+            warped_scan[..., idx] = np.squeeze(
+                mapping.transform(np.expand_dims(transformed_scan[..., idx], axis=-1),
+                                  interpolation=self.interpolation))
 
         if is_tpm:
             warped_scan = self.renormalize_tpm(warped_scan)
@@ -141,11 +152,13 @@ class TPM_Registration:
         affine, mapping = self.registration_methods
         warped_scan = np.zeros(input_scan.shape)
         for idx in range(input_scan.shape[-1]):
-            warped_scan[..., idx] = np.squeeze(mapping.transform_inverse(np.expand_dims(input_scan[..., idx], axis=-1)))
+            warped_scan[..., idx] = np.squeeze(
+                mapping.transform_inverse(np.expand_dims(input_scan[..., idx], axis=-1),
+                                          interpolation=self.interpolation))
         transformed_scan = self.affine_reg.apply_inverse_affine_to_multimodal_image(warped_scan, affine, is_tpm)
 
         if is_tpm:
-            warped_scan = self.renormalize_tpm(warped_scan)
+            transformed_scan = self.renormalize_tpm(transformed_scan)
 
         return transformed_scan
 
@@ -190,6 +203,16 @@ class TPM_Registration:
         pickle.dump(self.target_grid2world, f)
         pickle.dump(self.registration_methods, f)
         f.close()
+        affine, deform_mapping = self.registration_methods
+        mat_dict = {
+            'source_grid2world': self.start_grid2world,
+            'target_grid2world': self.target_grid2world,
+            'affine_transform_forward': affine.affine,
+            'affine_transform_backward': affine.affine_inv,
+            'deform_mapping_forward': deform_mapping.forward,
+            'deform_mapping_backward': deform_mapping.backward,
+        }
+        scipy.io.savemat(filepath.replace('.sav', '.mat'), mdict=mat_dict)
 
     def load_warp_fields(self, filepath):
         """

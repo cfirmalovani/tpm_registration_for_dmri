@@ -42,14 +42,20 @@ class TPM_Registration_Pipeline:
                                  help="destination folder for output (warped) DTI maps (default is source directory)")
         self.parser.add_argument("-ot", "--out_tpm", type=str, nargs='?', default=None, const='default',
                                  metavar='TPM_savedir',
-                                 help="if activated, saving calculated TPM in destination folder (default is source directory)")
+                                 help="if activated, saving calculated TPM in destination folder "
+                                      "(default is source directory)")
         self.parser.add_argument("-m", "--mask", type=str, metavar='mask_filename',
                                  help="binary mask file (default will assume the DTI maps are already masked)")
+        self.parser.add_argument("--interpolation", "--interp", type=str, metavar='interpolation_method',
+                                 default='linear',
+                                 help="interpolation method for transformation: linear (default) / nearest")
         self.parser.add_argument("-sw", "--save_wrap", type=str, nargs='?', default=None, const='default',
                                  metavar='warp_savedir',
-                                 help="if activated, saving warp fields in destination folder (default is source directory)")
+                                 help="if activated, saving warp fields in destination folder "
+                                      "(default is source directory)")
         self.parser.add_argument("--smoothing", type=int, nargs='*', metavar='parameter',
-                                 help="if activated, gaussian smoothing parameters for TPM - may insert values for window size and sigma (default are 5, 1)")
+                                 help="if activated, gaussian smoothing parameters for TPM - "
+                                      "may insert values for window size and sigma (default are 5, 1)")
         self.parser.add_argument("-v", "--verbose", action="store_true",
                                  help="if activated, provide status reports of the pipeline")
 
@@ -92,6 +98,7 @@ class TPM_Registration_Pipeline:
             args = self.parser.parse_args(test_args)
 
         self.verbose = args.verbose
+        self.interpolation = args.interpolation
 
         if args.smoothing is not None and len(args.smoothing) not in (0, 2):
             self.parser.error('Either give no values for action, or two, not {}.'.format(len(args.smoothing)))
@@ -157,7 +164,7 @@ class TPM_Registration_Pipeline:
             nib.save(nib_scan, self.tpm_output)
 
         # TPM registration
-        tpm_registration = TPM_Registration(verbose=self.verbose)
+        tpm_registration = TPM_Registration(verbose=self.verbose, interpolation=self.interpolation)
         target_scan = nib.load(self.ref_tpm)
         target_affine = target_scan.affine
         target_image = target_scan.get_fdata()
